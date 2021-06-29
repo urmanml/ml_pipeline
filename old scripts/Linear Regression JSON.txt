@@ -1,0 +1,8 @@
+{
+    "DatasetLocation": "C:\\Users\\housing_Prices_Dataset.csv",
+    "OutputLocation": "C:\\Users\\LR_Outpu.csv",
+    "Target" : "MEDV",
+    "inputDatsetDelimiter" : ",",
+    "resultDelimiter" : ",",
+    "columnNames": [{"columnName": "LSTAT"}, {"columnName": "RM"}]
+}
