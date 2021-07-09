@@ -157,3 +157,13 @@ def tune_estimators(X, Y, estimator_list, n_iter= 5):
     func= lambda x: tune_estimator(X, Y, x, n_iter)
     estimator_list= list(map(func, estimator_list))
     return estimator_list
+
+
+def predict_proba(pred_X, tuned_estimator):
+    """
+    :param test_X:
+    :param estimator_list:
+    :return:
+    """
+    pred_Y_prob= tuned_estimator.predict_proba(pred_X)[:,1]
+    return pred_Y_prob
