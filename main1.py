@@ -10,8 +10,10 @@ os.chdir(project_dir)
 
 import local_functions
 import importlib, joblib
-import numpy as np
+import numpy as np, pandas as pd
 importlib.reload(local_functions)
+from twitter_sentiment import sentiment_analysis
+
 
 
 app = FastAPI()
@@ -168,3 +170,9 @@ async def predict_proba_api(threshold: float= .5):
     pred_X[['pred_prob','pred_class']].to_csv('output/predicted_output.csv')
     return "predicted successfully for: "+ str(pred_X.shape[0])+ " rows"
 
+@app.get("/twitter_sentiment_prediction")
+async def twitter_sentiment_api(tweet: str= '#sampletweet'):
+    df= pd.DataFrame(columns=['tweet'])
+    df.loc[0,'tweet']= tweet
+    result= sentiment_analysis(df).sentiment[0]
+    return result
