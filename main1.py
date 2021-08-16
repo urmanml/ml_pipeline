@@ -176,3 +176,11 @@ async def twitter_sentiment_api(tweet: str= '#sampletweet'):
     df.loc[0,'tweet']= tweet
     result= sentiment_analysis(df).sentiment[0]
     return result
+
+@app.get("/sentiment_prediction")
+async def twitter_sentiment_api(tweet: str= '#sampletweet'):
+    df= pd.DataFrame(columns=['tweet'])
+    df.loc[0,'tweet']= tweet
+    polarity= sentiment_analysis(df).TextBlob_Polarity
+    subjectivity = sentiment_analysis(df).TextBlob_Subjectivity
+    return "polarity: "+str(polarity[0])+" and subjectivity: "+str(subjectivity[0])
