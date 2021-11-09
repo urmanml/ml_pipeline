@@ -1,57 +1,5 @@
 # Date Disimilar
 import pandas as pd, numpy as np
-def date_mismatch(data, col):
-    cnt=0
-    c1=data[col].isna().sum()
-    from datetime import datetime
-    for i in data[col]:
-        if isinstance(i, datetime):
-            cnt+=1
-
-    z=len(data[col])-cnt-c1
-    per=(z/len(data[col]))*100
-    return per
-# Float Mismatch
-def float_mismatch(data, col):
-    c=0
-    c1=data[col].isna().sum()
-    for i in data[col]:
-        if isinstance(i, float):
-            c+=1
-    z=len(data[col])-c-c1
-    return (z/len(data[col]))*100
-
-def int_mismatch(data, col):
-    c=0
-    c1=data[col].isna().sum()
-    for i in data[col]:
-        if isinstance(i, int):
-            c+=1
-    z=len(data[col])-c-c1
-    return (z/len(data[col]))*100
-# string dismillar
-def string_mismatch(data, col):
-    cnt=0
-    c1=data[col].isna().sum()
-
-    for i in data[col]:
-        if isinstance(i, str):
-            cnt+=1
-    z = len(data[col]) - cnt - c1
-    per=(z/len(data[col]))*100
-    return per
-# Boolean Mismatch
-def bool_mismatch(data, col):
-    c=0
-    c1=data[col].isna().sum()
-
-    for i in data[col]:
-        if isinstance(i, bool):
-            c+=1
-    print(c)
-    print(len(data[col]))
-    z=len(data[col])-c-c1
-    return (z/len(data[col]))*100
 
 import seaborn as sns
 data= sns.load_dataset('iris')
@@ -61,17 +9,8 @@ test_data= data
 test_data.loc[0,'sepal_width']= 'test_data'
 test_data.loc[0,'col_date']= 'test_data'
 
-col= 'sepal_length'
 
-bool_mismatch(data, 'species')
-
-desired_datatype_dict= {'sepal_length': 'float',
- 'sepal_width': 'float',
- 'petal_length': 'float',
- 'petal_width': 'float',
- 'species': 'str',
- 'col_date':'datetime'}
-
+#
 ##1 convert to  one function and remove the ifs
 ##2 remove the loop and use apply function
 
@@ -79,9 +18,9 @@ desired_datatype_dict= {'sepal_length': 'float',
 
 ##create a test dataset with invalid values
 
-
-test_data['col_date']= pd.to_datetime(test_data['col_date'])
-test_data.info()
+from datetime import datetime
+# test_data['col_date']= pd.to_datetime(test_data['col_date'])
+# test_data.info()
 ### column will convert to an object datatype column if we have a string value in date column or float column
 
 ### generic mismatch function
@@ -96,13 +35,13 @@ def alldtype_mismatch(col, data,  desired_datatype_dict):
     per=(z/len(data[col]))*100
     return per
 
-col= 'sepal_width'
+# col= 'sepal_width'
 ### function to call
 #alldtype_mismatch(data, col, desired_datatype_dict[col])
 
 
 
-def wrapper(col, data= data, desired_datatype_dict= desired_datatype_dict):
+def wrapper(col, data, desired_datatype_dict):
     return alldtype_mismatch(col, data, desired_datatype_dict)
 
 
@@ -161,5 +100,6 @@ def dtype_mismatch3(data, desired_datatype_dict):
 #     results = executor.map(np.power, [1,2,3],repeat(2))
 #
 
-dtype_mismatch3(data, desired_datatype_dict)
+#dtype_mismatch2(data, desired_datatype_dict)
 
+#data.drop(columns=['Unnamed: 0']).to_csv('E:/Python WD/ml_pipeline/input/sample_data.csv')

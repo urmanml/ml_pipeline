@@ -184,3 +184,25 @@ async def twitter_sentiment_api(tweet: str= '#sampletweet'):
     polarity= sentiment_analysis(df).TextBlob_Polarity
     subjectivity = sentiment_analysis(df).TextBlob_Subjectivity
     return "polarity: "+str(polarity[0])+" and subjectivity: "+str(subjectivity[0])
+
+
+
+
+from invalid_data_type import dtype_mismatch2
+
+
+
+desired_datatype_dict= {'sepal_length': 'float',
+ 'sepal_width': 'float',
+ 'petal_length': 'float',
+ 'petal_width': 'float',
+ 'species': 'str',
+ 'col_date':'datetime'}
+#path= 'E://Python WD/ml_pipeline/input/sample_data.csv'
+
+@app.get("/dtype_mismatch")
+async def dtype_mismatch_api(data_path: str= 'E://Python WD/ml_pipeline/input/sample_data.csv', desired_datatype_dict= desired_datatype_dict):
+    data= pd.read_csv(data_path, index_col=None)
+    data= data.drop(columns=['Unnamed: 0'])
+    result_dict= dtype_mismatch2(data, desired_datatype_dict)
+    return result_dict
