@@ -22,6 +22,8 @@ desired_datatype_dict= {'sepal_length': 'float',
 
 ##--------------------------------------------------------------------------------
 def alldtype_mismatch_preview_col(col, data,  desired_datatype_dict):
+    import pandas as pd, numpy as np
+
     from itertools import repeat
     invalid_mask= map(isinstance, data[col], repeat(eval(desired_datatype_dict[col])))
     invalid_mask=[not e for e in invalid_mask]
@@ -36,6 +38,8 @@ alldtype_mismatch_preview_col(col, data,  desired_datatype_dict)
 
 
 def alldtype_mismatch_preview_df(data, desired_datatype_dict):
+    import pandas as pd, numpy as np
+
     from itertools import repeat
     col_list = data.columns.tolist()
     ##wrapper function applies to a single column
@@ -52,6 +56,8 @@ alldtype_mismatch_preview_df(data, desired_datatype_dict)
 
 ##--------------------------------------------------------
 def alldtype_mismatch_remove(col, data,  desired_datatype_dict):
+    import pandas as pd, numpy as np
+
     from itertools import repeat
     invalid_mask= map(isinstance, data[col], repeat(eval(desired_datatype_dict[col])))
     invalid_mask=[not e for e in invalid_mask]
@@ -62,6 +68,8 @@ def alldtype_mismatch_remove(col, data,  desired_datatype_dict):
 alldtype_mismatch_remove(col, data,  desired_datatype_dict)
 
 def alldtype_mismatch_replace(col, data,  desired_datatype_dict, replace_value= 'test_data_replace'):
+    import pandas as pd, numpy as np
+
     data= data.copy()
     from itertools import repeat
     invalid_mask= map(isinstance, data[col], repeat(eval(desired_datatype_dict[col])))
