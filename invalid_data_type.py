@@ -10,7 +10,7 @@ data['col_date']= pd.to_datetime(data['col_date'])
 test_data= data
 test_data.loc[0,'sepal_width']= 'test_data'
 test_data.loc[0,'col_date']= 'test_data'
-
+data.info()
 
 desired_datatype_dict= {'sepal_length': 'float',
  'sepal_width': 'float',
@@ -33,6 +33,24 @@ def alldtype_mismatch_preview_col(col, data,  desired_datatype_dict):
 col= 'col_date'
 alldtype_mismatch_preview_col(col, data,  desired_datatype_dict)
 
+
+
+def alldtype_mismatch_preview_df(data, desired_datatype_dict):
+    from itertools import repeat
+    col_list = data.columns.tolist()
+    ##wrapper function applies to a single column
+    results= map(alldtype_mismatch_preview_col, col_list, repeat(data), repeat(desired_datatype_dict))
+    result_list= [e for e in results]
+
+    result_dict= dict(pd.DataFrame({'column': desired_datatype_dict.keys(), 'invalid_percentage': result_list}).values)
+    return result_dict
+
+##sample execution
+alldtype_mismatch_preview_df(data, desired_datatype_dict)
+
+
+
+##--------------------------------------------------------
 def alldtype_mismatch_remove(col, data,  desired_datatype_dict):
     from itertools import repeat
     invalid_mask= map(isinstance, data[col], repeat(eval(desired_datatype_dict[col])))
@@ -56,15 +74,3 @@ def alldtype_mismatch_replace(col, data,  desired_datatype_dict, replace_value= 
 alldtype_mismatch_replace(col, data,  desired_datatype_dict, replace_value= 'test_data_replace')
 
 
-def alldtype_mismatch_preview_df(data, desired_datatype_dict):
-    from itertools import repeat
-    col_list = data.columns.tolist()
-    ##wrapper function applies to a single column
-    results= map(alldtype_mismatch_preview_col, col_list, repeat(data), repeat(desired_datatype_dict))
-    result_list= [e for e in results]
-
-    result_dict= dict(pd.DataFrame({'column': desired_datatype_dict.keys(), 'invalid_percentage': result_list}).values)
-    return result_dict
-
-##sample execution
-alldtype_mismatch_preview_df(data, desired_datatype_dict)
