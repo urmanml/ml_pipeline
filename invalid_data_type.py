@@ -19,6 +19,16 @@ desired_datatype_dict= {'sepal_length': 'float',
  'species': 'str',
  'col_date':'datetime'}
 
+import os
+os.getcwd()
+data= pd.read_csv('E:\Python WD\ml_pipeline\input\modal_backtesting_output.csv', usecols=['FT_TEACHER', 'END_GRADE'])
+data= pd.read_csv('E:\Python WD\ml_pipeline\input\modal_backtesting_output.csv')
+data.loc[:,['DISTRICTID']].info()
+data.info()
+data.iloc[0,0].astype('int')
+
+
+
 
 ##--------------------------------------------------------------------------------
 def alldtype_mismatch_preview_col(col, data,  desired_datatype_dict):

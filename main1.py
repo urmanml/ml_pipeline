@@ -188,21 +188,57 @@ async def twitter_sentiment_api(tweet: str= '#sampletweet'):
 
 
 
-from invalid_data_type import dtype_mismatch2
+#from invalid_data_type import dtype_mismatch2
 
 
-
-desired_datatype_dict= {'sepal_length': 'float',
- 'sepal_width': 'float',
- 'petal_length': 'float',
- 'petal_width': 'float',
- 'species': 'str',
- 'col_date':'datetime'}
+#
+# desired_datatype_dict= {'sepal_length': 'float',
+#  'sepal_width': 'float',
+#  'petal_length': 'float',
+#  'petal_width': 'float',
+#  'species': 'str',
+#  'col_date':'datetime'}
 #path= 'E://Python WD/ml_pipeline/input/sample_data.csv'
 
-@app.get("/dtype_mismatch")
-async def dtype_mismatch_api(data_path: str= 'E://Python WD/ml_pipeline/input/sample_data.csv', desired_datatype_dict= desired_datatype_dict):
+# @app.get("/dtype_mismatch")
+# async def dtype_mismatch_api(data_path: str= 'E://Python WD/ml_pipeline/input/sample_data.csv', desired_datatype_dict= desired_datatype_dict):
+#     data= pd.read_csv(data_path, index_col=None)
+#     data= data.drop(columns=['Unnamed: 0'])
+#     result_dict= dtype_mismatch2(data, desired_datatype_dict)
+#     return result_dict
+#
+
+
+#### wrangling api
+
+from wrangling import duplicate_column, IQR_graph_data, find_outliers
+
+
+@app.get("/duplicate_column")
+async def duplicate_column_api(col, data_path: str= 'E://Python WD/ml_pipeline/input/sample_data.csv', output_path: str= 'E://Python WD/ml_pipeline/output/sample_output.csv'):
     data= pd.read_csv(data_path, index_col=None)
-    data= data.drop(columns=['Unnamed: 0'])
-    result_dict= dtype_mismatch2(data, desired_datatype_dict)
-    return result_dict
+    data= duplicate_column(data, col, suffix='_dup')
+    data.to_csv(output_path)
+    return "success"
+
+
+@app.get("/IQR_graph_data")
+def IQR_graph_data_api(col, data_path: str= 'E://Python WD/ml_pipeline/input/sample_data.csv'):
+    data= pd.read_csv(data_path, index_col=None)
+    result_dict= IQR_graph_data(data, col)
+    import json
+    return json.dumps(result_dict)
+
+@app.get("/find_outliers")
+def find_outliers_api(col, data_path: str= 'E://Python WD/ml_pipeline/input/sample_data.csv'):
+    data= pd.read_csv(data_path, index_col=None)
+    result_dict= find_outliers(data, col)
+    #create json from dict
+    import json
+    return json.dumps(result_dict)
+
+
+
+
+
+
