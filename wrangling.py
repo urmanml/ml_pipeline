@@ -10,31 +10,40 @@ def duplicate_column(data, col, suffix='_dup'):
 
 
 def IQR_graph_data(data, col):
-    result_dict={}
-    result_dict['min']= data[col].quantile(0)
-    result_dict['Q1']= data[col].quantile(.25)
-    result_dict['median']= data[col].quantile(.5)
-    result_dict['Q3']= data[col].quantile(.75)
-    result_dict['max']= data[col].quantile(1)
-    result_dict['range']=  result_dict['Q3'] - result_dict['Q1']
+
+    ### return a list containig
+    result_dict= {'data':[data[col].quantile(0),data[col].quantile(.25),data[col].quantile(.5),data[col].quantile(.75),data[col].quantile(1)]}
+    result_dict['name']= 'Observations'
     return result_dict
 
 # Outlier - Percentile find outliers and graph data API
 
 def find_outliers(data, col):
     result_dict = {}
-    result_dict['min'] = data[col].quantile(0)
-    result_dict['Q1'] = data[col].quantile(.25)
-    result_dict['median'] = data[col].quantile(.5)
-    result_dict['Q3'] = data[col].quantile(.75)
-    result_dict['max'] = data[col].quantile(1)
-    result_dict['range'] = result_dict['Q3'] - result_dict['Q1']
-    upper_threshold= result_dict['Q3']+1.5* result_dict['range']
-    lower_threshold= result_dict['Q1']-1.5* result_dict['range']
+    Q1 = data[col].quantile(.25)
+    Q3 = data[col].quantile(.75)
+    range = data[col].quantile(.75) - data[col].quantile(.25)
 
-    result_dict['upper_outlier_list']= data[col][data[col]> upper_threshold].to_list()
-    result_dict['lower_outlier_list']= data[col][data[col]< lower_threshold].to_list()
+    obs_list= [data[col].quantile(0),data[col].quantile(.25),data[col].quantile(.5),data[col].quantile(.75),data[col].quantile(1)]
+    observations_dict= {'name': 'Observations', 'data': obs_list}
+
+    upper_threshold= Q3+1.5* range
+    lower_threshold= Q1-1.5* range
+
+    upper_outlier_list= data[col][data[col]> upper_threshold].to_list()
+    lower_outlier_list= data[col][data[col]< lower_threshold].to_list()
+    outlier_list= upper_outlier_list+ lower_outlier_list
+    outlier_list_result = []
+    for i in outlier_list:
+        outlier_list_result.append([0, i])
+    outlier_list_result
+
+    outlier_dict= {'name': 'Outlier', 'data': outlier_list_result}
+    result_dict= {'observations_dict':observations_dict,'outlier_dict': outlier_dict }
     return result_dict
+
+
+
 
 
 
