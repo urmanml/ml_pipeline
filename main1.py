@@ -237,6 +237,8 @@ def find_outliers_api(col, data_path: str= 'E://Python WD/ml_pipeline/input/samp
     import json
     return json.dumps(result_dict)
 
+#uvicorn main1:app --reload
+
 
 
 
