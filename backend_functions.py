@@ -3,9 +3,8 @@ def adder(num1: float= 2, num2: float= 3):
     return num1+num2
 
 import joblib
-def split_data_X_Y(dataset, target, selected_columns ,test_size= .3):
+def split_data_X_Y(dataset, target, selected_columns ,test_size= .3,    ):
     import pandas as pd
-    seed= 1234
     test_size= test_size
     import random
     from sklearn.model_selection import train_test_split
@@ -21,4 +20,45 @@ def split_data_X_Y(dataset, target, selected_columns ,test_size= .3):
 
 
     return series, "train test split done successful. Train size: "+str(X.shape)+ ", test size: "+str(test_X.shape)
+
+
+
+
+
+def define_estimators(estimator_flag_dict, seed= 1234):
+    import pandas as pd
+    from sklearn.tree import DecisionTreeClassifier
+    # from sklearn.ensemble import RandomForestClassifier
+    from sklearn.linear_model import LogisticRegression
+    import xgboost as xgb
+    seed= seed
+    estimator_series= pd.Series(dtype= 'object')
+    #base models
+    if estimator_flag_dict['lr']==True:
+        estimator = LogisticRegression(random_state=seed)
+        estimator_series['lr']= estimator
+
+    if estimator_flag_dict['dt']==True:
+        estimator = DecisionTreeClassifier(random_state=seed)
+        estimator_series['dt']= estimator
+
+    if estimator_flag_dict['xgb'] == True:
+        estimator = xgb.XGBClassifier(random_state=seed, learning_rate=0.01)
+        estimator_series['xgb']= estimator
+
+    #estimator_series = pd.Series(dtype=object)
+
+    #estimator_list= [estimator1, estimator2, estimator3]
+    return estimator_series
+
+
+def fit_estimators(X, Y, estimator_series):
+    import pandas as pd
+    ### series to list
+    fit_func = lambda x: x.fit(X,Y)
+    fitted_list= list(map(fit_func, estimator_series))
+    result_series= pd.Series(fitted_list)
+    result_series= result_series.set_axis(estimator_series.keys())
+    estimator_series= result_series
+    return estimator_series
 

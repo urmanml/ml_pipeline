@@ -71,3 +71,40 @@ async def train_test_split_api(target='Outcome', test_ratio= .3, selected_column
     print("websocket message: train test split started")
 
     return message
+
+
+
+
+
+@app.get("/define_and_fit_estimators")
+async def define_and_fit_estimators_api(estimator_list:str= ['lr','xgb', 'dt']):
+    """
+    Select which estimators need to be considered
+    :param Logistic_Regression: LR
+    :param Decision_tree: DT
+    :param Xgboost: XGB
+    :return:
+    """
+
+    estimator_flag_dict={'lr':False, 'dt':False, 'xgb':False}
+
+    for estimator in estimator_list:
+        estimator_flag_dict[estimator]= True
+
+#    estimator_flag_dict={'lr':True, 'dt':True, 'xgb':True}
+    estimator_series= backend_functions.define_estimators(estimator_flag_dict)
+
+    joblib.dump(estimator_series, 'temporary_objects/estimator_series')
+
+    ################ fit estimator
+    series =joblib.load('temporary_objects/XY')
+
+    estimator_series = joblib.load('temporary_objects/estimator_series')
+
+    X, Y= series['X'], series['Y']
+    estimator_series= backend_functions.fit_estimators(X, Y, estimator_series=estimator_series)
+    joblib.dump(estimator_series, 'temporary_objects/estimator_series')
+    return "successfully defined and fitted "+str(len(estimator_series))+" estimators"
+
+#list(s1.keys())
+#list(s1.values)
