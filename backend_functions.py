@@ -62,3 +62,41 @@ def fit_estimators(X, Y, estimator_series):
     estimator_series= result_series
     return estimator_series
 
+
+def classification_metrics(Y, Y_PRED_prob, threshold= .5, pos_label= 1, cost_fp_fn=(5, 1)):
+    import pandas as pd
+    from sklearn.metrics.classification import confusion_matrix, f1_score, \
+        accuracy_score, balanced_accuracy_score, classification_report, recall_score, \
+        precision_score, precision_recall_fscore_support
+    from sklearn.metrics import precision_recall_curve, roc_auc_score, accuracy_score
+    import numpy as np
+    Y_PRED= np.where(Y_PRED_prob> threshold, 1, 0).astype('int')
+    Y= Y.astype('int')
+    metrics=pd.Series(dtype= object)
+    metrics['accuracy_score']= accuracy_score(Y,Y_PRED)
+    metrics['f1_score']= f1_score(Y,Y_PRED)
+    #metrics['precision_recall_fscore_support']= precision_recall_fscore_support(Y,Y_PRED)
+    metrics['recall_score']= recall_score(Y,Y_PRED, pos_label= pos_label)
+    metrics['precision_score']= precision_score(Y,Y_PRED, pos_label= pos_label)
+    metrics['auc']= roc_auc_score(Y,Y_PRED)
+    ###custom metric loss_index
+
+    ###precision recall curve
+    precisions, recalls, thresholds= precision_recall_curve(Y, Y_PRED_prob)
+
+    #metrics['prec_recall_plot'].show()
+    metrics['gini'] = 2 * roc_auc_score(Y, Y_PRED_prob) - 1
+    metrics['confusion_matrix']= confusion_matrix(Y, Y_PRED,labels=[0,1])
+
+    return metrics
+
+def evaluate_estimators(test_X, test_Y, estimator_series, cost_fp_fn=(5,1)):
+    """
+    Y_PRED_prob= estimator.predict_proba(test_X)[:,1]
+    metrics= functions.classification_metrics(test_Y, Y_PRED_prob, threshold=.50,  cost_fp_fn=(5,1))
+    """
+    Y_PRED_prob_list= list(map(lambda x: x.predict_proba(test_X)[:,1], estimator_series))
+    func= lambda x: classification_metrics(test_Y, x, threshold=.50,  cost_fp_fn= cost_fp_fn)
+    metrics_list= list(map(func, Y_PRED_prob_list))
+
+    return metrics_list

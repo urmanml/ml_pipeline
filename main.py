@@ -108,3 +108,36 @@ async def define_and_fit_estimators_api(estimator_list:str= ['lr','xgb', 'dt']):
 
 #list(s1.keys())
 #list(s1.values)
+
+@app.get("/evaluate_estimators")
+async def evaluate_estimators_api():
+    """
+    Evaluate the performance of the fitted estimators
+    :return:
+    """
+    import pandas as pd
+    series =joblib.load('temporary_objects/XY')
+    estimator_series = joblib.load('temporary_objects/estimator_series')
+
+    test_X, test_Y= series['test_X'], series['test_Y']
+    metrics_list= backend_functions.evaluate_estimators(test_X, test_Y, estimator_series=estimator_series)
+    metrics_series= pd.Series(metrics_list)
+    metrics_series= metrics_series.set_axis(estimator_series.keys())
+
+
+    metrics_df= pd.DataFrame(columns=metrics_series.keys(), index=metrics_series[0].index)
+    metrics_df.index.name= "Metric"
+
+    for col in metrics_series.keys():
+        metrics_df[col]= metrics_series[col]
+
+
+
+
+    metrics_df.to_csv('output/metric_df.csv')
+
+
+
+
+    return "success"
+
