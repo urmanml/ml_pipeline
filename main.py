@@ -120,9 +120,8 @@ async def evaluate_estimators_api():
     estimator_series = joblib.load('temporary_objects/estimator_series')
 
     test_X, test_Y= series['test_X'], series['test_Y']
-    metrics_list= backend_functions.evaluate_estimators(test_X, test_Y, estimator_series=estimator_series)
-    metrics_series= pd.Series(metrics_list)
-    metrics_series= metrics_series.set_axis(estimator_series.keys())
+    metrics_series= backend_functions.evaluate_estimators(test_X, test_Y, estimator_series=estimator_series)
+
 
 
     metrics_df= pd.DataFrame(columns=metrics_series.keys(), index=metrics_series[0].index)
@@ -138,6 +137,24 @@ async def evaluate_estimators_api():
 
 
 
+
+    return "success"
+
+
+@app.get("/tune_estimator")
+async def tune_estimator_api(selected_estimator_id='xgb', n_iter: int= 10):
+
+    import joblib
+    estimator_series = joblib.load('temporary_objects/estimator_series')
+    selected_estimator_series= pd.Series(estimator_series[selected_estimator_id])
+    selected_estimator_series= selected_estimator_series.set_axis([selected_estimator_id])
+
+    series =joblib.load('temporary_objects/XY')
+    X, Y, test_X, test_Y= series['X'], series['Y'], series['test_X'], series['test_Y']
+    tuned_estimator_series= backend_functions.tune_estimators(X, Y, selected_estimator_series, n_iter= n_iter)
+    joblib.dump(tuned_estimator_series, 'temporary_objects/tuned_estimator_series')
+    tuned_metrics_series= backend_functions.evaluate_estimators(test_X, test_Y, estimator_series= tuned_estimator_series)
+    joblib.dump(tuned_metrics_series, 'temporary_objects/tuned_metrics_series' )
 
     return "success"
 

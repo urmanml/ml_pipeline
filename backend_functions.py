@@ -95,8 +95,74 @@ def evaluate_estimators(test_X, test_Y, estimator_series, cost_fp_fn=(5,1)):
     Y_PRED_prob= estimator.predict_proba(test_X)[:,1]
     metrics= functions.classification_metrics(test_Y, Y_PRED_prob, threshold=.50,  cost_fp_fn=(5,1))
     """
+    import pandas as pd
     Y_PRED_prob_list= list(map(lambda x: x.predict_proba(test_X)[:,1], estimator_series))
     func= lambda x: classification_metrics(test_Y, x, threshold=.50,  cost_fp_fn= cost_fp_fn)
     metrics_list= list(map(func, Y_PRED_prob_list))
+    metrics_series= pd.Series(metrics_list)
+    metrics_series= metrics_series.set_axis(estimator_series.keys())
 
-    return metrics_list
+    return metrics_series
+
+
+
+def define_param_grid(estimator):
+    if estimator.__class__.__name__ == 'RandomForestClassifier':
+        param_grid = {
+            'max_depth': [2, 5, 10, 20],
+            'n_estimators': [10, 100, 500]
+        }
+    elif estimator.__class__.__name__ == 'LogisticRegression':
+        param_grid = {
+            'penalty': ['l1','l2']
+        }
+    elif estimator.__class__.__name__ == 'DecisionTreeClassifier':
+        param_grid = {
+            'max_depth':[ 5, 10, 20, 50],
+            'min_samples_leaf': [1, 5, 10]
+        }
+    elif estimator.__class__.__name__ == 'XGBClassifier':
+        param_grid = {"learning_rate": [0.1, 0.01, 0.001],
+                  "gamma": [0.01, 0.1, 0.3, 0.5, 1, 1.5, 2],
+                  "max_depth": [2, 4, 7, 10],
+                  "colsample_bytree": [0.3, 0.6, 0.8, 1.0],
+                  "subsample": [0.2, 0.4, 0.5, 0.6, 0.7],
+                  "reg_alpha": [0, 0.5, 1],
+                  "reg_lambda": [1, 1.5, 2, 3, 4.5],
+                  "min_child_weight": [1, 3, 5, 7],
+                  "n_estimators": [100, 250, 500, 1000]}
+    else: print("hyperparameters not found")
+    return param_grid
+
+
+#define_param_grid(estimator)
+def tune_estimator(X, Y, estimator, n_iter= 5, n_jobs= -1):
+        #function for a sigle estimator
+        #estimator= selected_estimator
+        from sklearn.model_selection import RandomizedSearchCV
+        param_grid = define_param_grid(estimator)
+        estimator = RandomizedSearchCV(estimator, param_distributions= param_grid,cv=5, verbose=1, random_state=1234, n_iter=n_iter, scoring=['accuracy', 'precision'], refit='accuracy', n_jobs= n_jobs)
+        estimator.fit(X,Y)
+        estimator= estimator.best_estimator_
+        return estimator
+
+
+
+def tune_estimators(X, Y, estimator_series, n_iter= 5, n_jobs= -1):
+    """hyperparameter tuning """
+
+    func= lambda estimator: tune_estimator(X, Y, estimator, n_iter, n_jobs)
+    estimator_list= list(map(func, estimator_series))
+    estimator_series.set_axis(estimator_series.keys())
+    return estimator_series
+
+#
+#
+# with open(path, 'w') as fp:
+#     # To write data to new file uncomment
+#     fp.write("New file created")
+#     import sys
+#     sys.stdout= open(path, 'w')
+#     sys.stdout.close()
+#     fp.close()
+#     sys.stdout.close()
