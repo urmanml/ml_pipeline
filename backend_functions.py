@@ -174,3 +174,14 @@ def tune_estimators(X, Y, estimator_series, n_iter= 5, n_jobs= -1):
 #     sys.stdout.close()
 #     fp.close()
 #     sys.stdout.close()
+
+
+
+def predict_proba(pred_X, tuned_estimator):
+    """
+    :param test_X:
+    :param estimator_list:
+    :return:
+    """
+    pred_Y_prob= tuned_estimator.predict_proba(pred_X)[:,1]
+    return pred_Y_prob

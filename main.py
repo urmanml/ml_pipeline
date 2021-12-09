@@ -160,3 +160,31 @@ async def tune_estimator_api(selected_estimator_id='xgb', n_iter: int= 10):
 
 
 
+
+@app.get("/read_prediction_data")
+async def read_prediction_data_api():
+    pred_X= local_functions.read_data(path)
+    joblib.dump(pred_X, 'temporary_objects/pred_X')
+    return "data read successfully. Dataframe size is: "+str(pred_X.shape)+" with the following columns: "+str(pred_X.columns.to_list())
+
+
+
+@app.get("/predict_proba")
+async def predict_proba_api(path= 'input/pred_dataset.csv', threshold: float= .5):
+    pred_X= pd.read_csv(path)
+    tuned_estimator_series = joblib.load('temporary_objects/tuned_estimator_series')
+
+    pred_Y_prob= backend_functions.predict_proba(pred_X, tuned_estimator_series[0])
+
+    pred_X['pred_prob']= pred_Y_prob
+    pred_Y = np.where(pred_Y_prob > threshold, 1, 0).astype('int')
+    pred_X['pred_class'] = pred_Y
+    pred_X.to_csv('output/perdicted_set.csv', index= False)
+    pred_X[['pred_prob','pred_class']].to_csv('output/predicted_output.csv')
+    return "predicted successfully for: "+ str(pred_X.shape[0])+ " rows"
+
+
+
+
+
+
