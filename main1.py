@@ -170,21 +170,22 @@ async def predict_proba_api(threshold: float= .5):
     pred_X[['pred_prob','pred_class']].to_csv('output/predicted_output.csv')
     return "predicted successfully for: "+ str(pred_X.shape[0])+ " rows"
 
+ls= ['what a good day', 'what a bad day']
+
 @app.get("/twitter_sentiment_prediction")
-async def twitter_sentiment_api(tweet: str= '#sampletweet'):
-    df= pd.DataFrame(columns=['tweet'])
-    df.loc[0,'tweet']= tweet
-    result= sentiment_analysis(df).sentiment[0]
-    return result
+async def sentiment_api(tweet: list= ['what a good day', 'what a bad day']):
+    df= pd.DataFrame(tweet ,columns= ['tweet'])
+    result= sentiment_analysis(df)
+    return result.to_json()
 
-@app.get("/sentiment_prediction")
-async def twitter_sentiment_api(tweet: str= '#sampletweet'):
-    df= pd.DataFrame(columns=['tweet'])
-    df.loc[0,'tweet']= tweet
-    polarity= sentiment_analysis(df).TextBlob_Polarity
-    subjectivity = sentiment_analysis(df).TextBlob_Subjectivity
-    return "polarity: "+str(polarity[0])+" and subjectivity: "+str(subjectivity[0])
-
+# @app.get("/sentiment_prediction")
+# async def twitter_sentiment_api(tweet: str= '#sampletweet'):
+#     df= pd.DataFrame(columns=['tweet'])
+#     df.loc[0,'tweet']= tweet
+#     polarity= sentiment_analysis(df).TextBlob_Polarity
+#     subjectivity = sentiment_analysis(df).TextBlob_Subjectivity
+#     return "polarity: "+str(polarity[0])+" and subjectivity: "+str(subjectivity[0])
+#
 
 
 
