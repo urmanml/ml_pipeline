@@ -151,12 +151,15 @@ async def tune_estimator_api(selected_estimator_id='xgb', n_iter: int= 10):
 
     series =joblib.load('temporary_objects/XY')
     X, Y, test_X, test_Y= series['X'], series['Y'], series['test_X'], series['test_Y']
-    tuned_estimator_series= backend_functions.tune_estimators(X, Y, selected_estimator_series, n_iter= n_iter)
+    log_file_path= 'temporary_objects/tune_log.txt'
+    tuned_estimator_series, best_param_series= backend_functions.tune_estimators(X, Y, selected_estimator_series,log_file_path, n_iter= n_iter)
     joblib.dump(tuned_estimator_series, 'temporary_objects/tuned_estimator_series')
     tuned_metrics_series= backend_functions.evaluate_estimators(test_X, test_Y, estimator_series= tuned_estimator_series)
     joblib.dump(tuned_metrics_series, 'temporary_objects/tuned_metrics_series' )
+    import json
+    return json.dumps(best_param_series[0])
 
-    return "success"
+
 
 
 
