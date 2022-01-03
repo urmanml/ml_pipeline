@@ -172,10 +172,6 @@ def tune_estimators(X, Y, estimator_series,log_file_path, n_iter= 5, n_jobs= -1)
         estimator_list.append(result[0])
         best_param_list.append(result[1])
 
-
-
-
-
     estimator_series= pd.Series(estimator_list)
     best_param_series= pd.Series(best_param_list)
     estimator_series.set_axis(estimator_series.keys())
