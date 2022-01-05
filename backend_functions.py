@@ -3,7 +3,7 @@ def adder(num1: float= 2, num2: float= 3):
     return num1+num2
 
 import joblib
-def split_data_X_Y(dataset, target, selected_columns ,test_size= .3,    ):
+def split_data_X_Y(dataset, target, selected_columns ,test_size= .3,  seed= 1234  ):
     import pandas as pd
     test_size= test_size
     import random

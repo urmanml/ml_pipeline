@@ -1,6 +1,6 @@
 
 
-#tune_log_path= r'ml_pipeline/temporary_objects/tune_log.txt'
+tune_log_path= r'temporary_objects/tune_log.txt'
 
 def tuning_status(tune_log_path):
 
@@ -21,6 +21,6 @@ def tuning_status(tune_log_path):
 
     return status
 
-#tuning_status(tune_log_path)
+tuning_status(tune_log_path)
 
 
