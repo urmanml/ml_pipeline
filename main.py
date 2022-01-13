@@ -87,6 +87,17 @@ async def class_imbalance_api():
 
 
 
+@app.get("/class_distribution")
+async def class_distribution_api():
+    series= joblib.load('temporary_objects/XY')
+    Y = series['Y']
+    import class_distribution
+    result = class_distribution.class_distribution(Y)
+    result
+    import json
+    result.to_json()
+    return result.to_json()
+
 
 
 @app.get("/define_and_fit_estimators")
