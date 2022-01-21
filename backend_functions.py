@@ -191,6 +191,25 @@ def tune_estimators(X, Y, estimator_series,log_file_path, n_iter= 5, n_jobs= -1)
 #     sys.stdout.close()
 
 
+def recommend_tune_iter(estimator):
+    import numpy as np
+    def searchspace(estimator):
+        param_grid = define_param_grid(estimator)
+        n_hyperparameters = len(param_grid.items())
+        return n_hyperparameters
+
+    def compute_iter(n_hyperparameters):
+        if (n_hyperparameters<=4):
+            n_iter= 50
+        elif (n_hyperparameters>4):
+            n_iter= round(50+ 50*(n_hyperparameters-4),0)
+        return n_iter
+
+    n_hyperparameters= searchspace(estimator)
+    n_iter= compute_iter(n_hyperparameters)
+    return n_iter
+
+
 
 def predict_proba(pred_X, tuned_estimator):
     """

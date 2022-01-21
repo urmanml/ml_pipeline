@@ -4,7 +4,7 @@ from typing import List, Optional
 from fastapi import FastAPI, Query
 #from pydantic import BaseModel
 ## change to project directory here
-project_dir= "E:\Python WD/ml_pipeline"
+project_dir= "E:/Python WD/ml_pipeline"
 import os
 os.chdir(project_dir)
 
@@ -183,6 +183,17 @@ async def tune_estimator_api(selected_estimator_id='xgb', n_iter: int= 10):
     import json
     return json.dumps(best_param_series[0])
 
+@app.get("/recommend_tune_iter")
+async def recommend_tune_iter_api(selected_estimator_id='dt'):
+
+    import joblib, pandas as pd
+    estimator_series = joblib.load('temporary_objects/estimator_series')
+    selected_estimator_series= pd.Series(estimator_series[selected_estimator_id])
+    selected_estimator_series= selected_estimator_series.set_axis([selected_estimator_id])
+    estimator= selected_estimator_series[selected_estimator_id]
+
+    n_tune_iter= backend_functions.recommend_tune_iter(estimator)
+    return n_tune_iter
 
 
 
