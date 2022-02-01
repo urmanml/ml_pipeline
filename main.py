@@ -126,7 +126,8 @@ async def define_and_fit_estimators_api(estimator_list:str= ['lr','xgb', 'dt']):
     estimator_series = joblib.load('temporary_objects/estimator_series')
 
     X, Y= series['X'], series['Y']
-    estimator_series= backend_functions.fit_estimators(X, Y, estimator_series=estimator_series)
+    import fit_estimators
+    estimator_series= fit_estimators.fit_estimators(X, Y, estimator_series=estimator_series)
     joblib.dump(estimator_series, 'temporary_objects/estimator_series')
     return "successfully defined and fitted "+str(len(estimator_series))+" estimators"
 
@@ -140,11 +141,11 @@ async def evaluate_estimators_api():
     :return:
     """
     import pandas as pd
+    import fit_estimators
     series =joblib.load('temporary_objects/XY')
     estimator_series = joblib.load('temporary_objects/estimator_series')
-
     test_X, test_Y= series['test_X'], series['test_Y']
-    metrics_series= backend_functions.evaluate_estimators(test_X, test_Y, estimator_series=estimator_series)
+    metrics_series= fit_estimators.evaluate_estimators(test_X, test_Y, estimator_series=estimator_series)
 
 
 
