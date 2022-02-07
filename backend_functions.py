@@ -87,7 +87,7 @@ def classification_metrics(Y, Y_PRED_prob, threshold= .5, pos_label= 1, cost_fp_
     #metrics['prec_recall_plot'].show()
     metrics['gini'] = 2 * roc_auc_score(Y, Y_PRED_prob) - 1
     #etrics['confusion_matrix']= confusion_matrix(Y, Y_PRED,labels=[0,1])
-    positives, negatives = confusion_matrix(Y, Y,labels=[0,1])
+    positives, negatives = confusion_matrix(Y, Y_PRED,labels=[0,1])
     TP, FP= positives[0],positives[1]
     FN, TN= negatives[0], negatives[1]
 
