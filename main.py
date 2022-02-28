@@ -75,6 +75,17 @@ async def train_test_split_api(target='Outcome', test_ratio= .3, selected_column
 
 
 
+@app.get("/feature_suggestion")
+async def feature_suggestion_api():
+    series= joblib.load('temporary_objects/XY')
+    X, Y = series['X'], series['Y']
+    import feature_selection
+    result= feature_selection.feature_suggestion(X, Y, approach= 'multivariate')
+    import json
+    return result.to_json()
+
+
+
 @app.get("/class_imbalance")
 async def class_imbalance_api():
     series= joblib.load('temporary_objects/XY')
@@ -221,6 +232,8 @@ async def predict_proba_api(path= 'input/pred_dataset.csv', threshold: float= .5
     pred_X.to_csv('output/perdicted_set.csv', index= False)
     pred_X[['pred_prob','pred_class']].to_csv('output/predicted_output.csv')
     return "predicted successfully for: "+ str(pred_X.shape[0])+ " rows"
+
+
 
 
 
