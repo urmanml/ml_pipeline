@@ -1,10 +1,10 @@
 
-import joblib
-
-dataset = joblib.load('temporary_objects/df')
-selected_columns = list(dataset.columns[0:-1])
-target='Outcome'
-create_validation_set= True
+# import joblib
+#
+# dataset = joblib.load('temporary_objects/df')
+# selected_columns = list(dataset.columns[0:-1])
+# target='Outcome'
+# create_validation_set= True
 def split_data_X_Y(dataset, target, selected_columns ,test_size= .3,  seed= 1234 , create_validation_set= False ):
     import pandas as pd
     test_size= test_size
@@ -36,8 +36,4 @@ def split_data_X_Y(dataset, target, selected_columns ,test_size= .3,  seed= 1234
     return series
 
 
-s1= split_data_X_Y(dataset, target, selected_columns ,test_size= .3,  seed= 1234 , create_validation_set= True )
 
-s1['val_X'].shape
-
-s1['test_Y'].shape

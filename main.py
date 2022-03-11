@@ -39,7 +39,7 @@ async def adder_api(num1: float= 2, num2: float= 3):
 
 
 @app.get("/train_test_split")
-async def train_test_split_api(target='Outcome', test_ratio= .3, selected_columns=[]):
+async def train_test_split_api(target='Outcome', test_ratio= .3, selected_columns=[], create_validation_set= False):
     """
     train test data split
     :param target: target variable name
@@ -51,12 +51,14 @@ async def train_test_split_api(target='Outcome', test_ratio= .3, selected_column
     dataset = joblib.load('temporary_objects/df')
     selected_columns= list(dataset.columns[0:-1])
 
-
-    series, message= backend_functions.split_data_X_Y(dataset, target, selected_columns= selected_columns, test_size= .3)
+    import train_test_split
+    series= train_test_split.split_data_X_Y(dataset, target, selected_columns= selected_columns, test_size= .3, create_validation_set= False)
 
     ### reconstruct train and test set for storing to delta lake
     train_set= pd.concat([series['X'], series['Y']], axis=1)
     test_set= pd.concat([series['test_X'], series['test_Y']], axis=1)
+    if create_validation_set== True:
+        validation_set = pd.concat([series['val_X'], series['val_Y']], axis=1)
 
     # Store intermediate objects to specified location
     joblib.dump(series, 'temporary_objects/XY')
