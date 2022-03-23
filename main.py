@@ -87,6 +87,16 @@ async def feature_suggestion_api():
     return result.to_json()
 
 
+@app.get("/recommend_balancing")
+async def recommend_balancing_api():
+    series= joblib.load('temporary_objects/XY')
+    Y = series['Y']
+    import recommend_balancing
+    result = recommend_balancing.recommend_balancing(Y)
+    result
+    return result
+
+
 
 @app.get("/class_imbalance")
 async def class_imbalance_api():
@@ -177,6 +187,17 @@ async def evaluate_estimators_api():
 
 
     return "success"
+
+
+@app.get("/recommend_estimator")
+async def recommend_estimator_api():
+    """recommend estimator to be selected after they have been evaluated"""
+    path= 'output/metric_df.csv'
+    import pandas as pd
+    metrics_df= pd.read_csv(path)
+    import recommend_estimator
+    result= recommend_estimator.recommend_estimator(metrics_df)
+    return result
 
 
 @app.get("/tune_estimator")
