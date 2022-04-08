@@ -212,7 +212,7 @@ async def sentiment_api(tweet: list= ['what a good day', 'what a bad day']):
 
 #### wrangling api
 
-from wrangling import duplicate_column, IQR_graph_data, find_outliers
+from wrangling import duplicate_column, IQR_graph_data, find_outliers, outlier_graph_data_percentile, outlier_graph_data_iqr
 
 
 @app.get("/duplicate_column")
@@ -239,6 +239,23 @@ def find_outliers_api(col, data_path: str= 'E://Python WD/ml_pipeline/input/samp
     return json.dumps(result_dict)
 
 #uvicorn main1:app --reload
+
+@app.get("/outlier_graph_data_iqr")
+def outlier_graph_data_iqr_api(col, data_path: str= 'E://Python WD/ml_pipeline/input/sample_data.csv'):
+    data= pd.read_csv(data_path, index_col=None)
+    import wrangling
+    result_dict= wrangling.outlier_graph_data_iqr(data, col)
+    #create json from dict
+    import json
+    return json.dumps(result_dict)
+
+@app.get("/outlier_graph_data_percentile")
+def outlier_graph_data_percentile_api(col, lower_bound_percentile= .01, upper_bound_percentile= .99, data_path: str= 'E://Python WD/ml_pipeline/input/sample_data.csv'):
+    data= pd.read_csv(data_path, index_col=None)
+    import wrangling
+    result_dict= wrangling.outlier_graph_data_percentile(data, col,  lower_bound_percentile, upper_bound_percentile)    #create json from dict
+    import json
+    return json.dumps(result_dict)
 
 
 
