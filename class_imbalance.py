@@ -1,5 +1,8 @@
-#X, Y = series['X'], series['Y']
-def class_imbalance(X, Y):
+import joblib
+series = joblib.load('temporary_objects/XY')
+X, Y= series['X'], series['Y']
+
+def class_imbalance(X, Y, prop= .5):
     import numpy as np
     from sklearn.utils import resample
     #
@@ -10,10 +13,14 @@ def class_imbalance(X, Y):
     minority_class= temp.idxmin()[0]
     X_imbalanced= X.reset_index(drop=True)
     Y_imbalanced= Y.reset_index(drop=True)
+    ### estimating sumber of samples to oversample
+    n_maj= X_imbalanced[Y_imbalanced.values == majority_class].shape[0]
+    n_min= int(n_maj*prop/(1-prop))
+
     X_oversampled, Y_oversampled = resample(X_imbalanced[(Y_imbalanced.values == minority_class)],
                                             Y_imbalanced[Y_imbalanced.values == minority_class],
                                             replace=True,
-                                            n_samples=X_imbalanced[Y_imbalanced.values == majority_class].shape[0],
+                                            n_samples= n_min,
                                             random_state=123)
     # Append the oversampled minority class to training data and related labels
     #
@@ -24,4 +31,11 @@ def class_imbalance(X, Y):
     return X_balanced, Y_balanced
 
 #temp1, temp2= class_imbalance(X, Y)
+
+
+
+50
+50
+prop= .60
+50*prop/(1-prop)
 

@@ -99,11 +99,12 @@ async def recommend_balancing_api():
 
 
 @app.get("/class_imbalance")
-async def class_imbalance_api():
+async def class_imbalance_api(proportion= .5):
     series= joblib.load('temporary_objects/XY')
     X, Y = series['X'], series['Y']
     import class_imbalance
-    X, Y= class_imbalance.class_imbalance(X, Y)
+    proportion= float(proportion)
+    X, Y= class_imbalance.class_imbalance(X, Y, prop= proportion)
     series['X'], series['Y']= X, Y
     joblib.dump(series, 'temporary_objects/XY_balanced')
     return "success"
@@ -226,8 +227,11 @@ async def recommend_tune_iter_api(selected_estimator_id='dt'):
     selected_estimator_series= pd.Series(estimator_series[selected_estimator_id])
     selected_estimator_series= selected_estimator_series.set_axis([selected_estimator_id])
     estimator= selected_estimator_series[selected_estimator_id]
+    series =joblib.load('temporary_objects/XY')
+    X, Y, test_X, test_Y= series['X'], series['Y'], series['test_X'], series['test_Y']
 
-    n_tune_iter= backend_functions.recommend_tune_iter(estimator)
+
+    n_tune_iter= backend_functions.recommend_tune_iter(estimator, X, Y)
     return n_tune_iter
 
 
@@ -255,6 +259,13 @@ async def predict_proba_api(path= 'input/pred_dataset.csv', threshold: float= .5
     pred_X.to_csv('output/perdicted_set.csv', index= False)
     pred_X[['pred_prob','pred_class']].to_csv('output/predicted_output.csv')
     return "predicted successfully for: "+ str(pred_X.shape[0])+ " rows"
+
+
+
+
+
+
+
 
 
 
