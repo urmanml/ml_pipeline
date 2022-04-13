@@ -230,8 +230,8 @@ async def recommend_tune_iter_api(selected_estimator_id='dt'):
     series =joblib.load('temporary_objects/XY')
     X, Y, test_X, test_Y= series['X'], series['Y'], series['test_X'], series['test_Y']
 
-
-    n_tune_iter= backend_functions.recommend_tune_iter(estimator, X, Y)
+    import recommend_tune_iterations
+    n_tune_iter= recommend_tune_iterations.recommend_tune_iter(estimator, X)
     return n_tune_iter
 
 
