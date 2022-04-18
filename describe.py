@@ -1,14 +1,14 @@
-import joblib
-series = joblib.load('temporary_objects/XY')
-X, Y = series['X'], series['Y']
-
-dataset= X
-X.select_dtypes(include='number')
-x= dataset['Pregnancies']
-import pandas as pd
-dataset['Age_band']= pd.cut(dataset['Age'],bins= [0,25,45,100])
-dataset['Pregnancies']= dataset['Pregnancies'].astype('object')
-x= dataset['Pregnancies']
+# import joblib
+# series = joblib.load('temporary_objects/XY')
+# X, Y = series['X'], series['Y']
+#
+# dataset= X
+# X.select_dtypes(include='number')
+# x= dataset['Pregnancies']
+# import pandas as pd
+# dataset['Age_band']= pd.cut(dataset['Age'],bins= [0,25,45,100])
+# dataset['Pregnancies']= dataset['Pregnancies'].astype('object')
+# x= dataset['Pregnancies']
 
 #X.select_dtypes(include=['category', 'object'])
 
@@ -71,5 +71,5 @@ def describe_dataframe(dataset):
     result= {'result_numeric':result_numeric, 'result_category':result_category}
     return result
 
-describe_dataframe(dataset)
+# describe_dataframe(dataset)
 
