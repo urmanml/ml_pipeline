@@ -262,6 +262,18 @@ async def predict_proba_api(path= 'input/pred_dataset.csv', threshold: float= .5
 
 
 
+def correlation_api(path= 'temporary_objects/df', method= 'spearman', columns= ['Pregnancies'  ,'Glucose']):
+    dataset = joblib.load(path)
+
+    import correlation
+    #methods= ['pearson','kendall','spearman']
+    result= correlation.correlation(dataset, method= method, columns= columns)
+    return result
+
+
+
+
+
 
 
 
